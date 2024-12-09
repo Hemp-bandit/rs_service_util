@@ -42,7 +42,7 @@ pub enum RedisCmd {
 }
 
 pub struct RedisActor {
-    conn: MultiplexedConnection,
+    pub conn: MultiplexedConnection,
 }
 
 impl RedisActor {
