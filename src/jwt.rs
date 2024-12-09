@@ -1,6 +1,32 @@
 use crate::response::BizError;
 use serde::{Deserialize, Serialize};
 use simple_base64::{decode, encode};
+use utoipa::{
+    openapi::{
+        self,
+        security::{HttpAuthScheme, HttpBuilder, SecurityScheme},
+    },
+    Modify,
+};
+
+#[derive(Debug, Serialize)]
+pub struct JWT;
+
+impl Modify for JWT {
+    fn modify(&self, openapi: &mut openapi::OpenApi) {
+        if let Some(schema) = openapi.components.as_mut() {
+            schema.add_security_scheme(
+                "JWT",
+                SecurityScheme::Http(
+                    HttpBuilder::new()
+                        .scheme(HttpAuthScheme::Bearer)
+                        .bearer_format("JWT")
+                        .build(),
+                ),
+            );
+        }
+    }
+}
 
 pub fn gen_jwt_token<T: Serialize>(login_data: T) -> String {
     let json_str = serde_json::to_string(&login_data).expect("msg");
@@ -25,7 +51,6 @@ pub fn jwt_token_to_data<T: for<'a> Deserialize<'a>>(jwt_token: String) -> Resul
         }
     }
 }
-
 
 #[cfg(test)]
 mod test {
