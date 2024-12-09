@@ -6,9 +6,8 @@ use actix_web::{
 };
 use derive_more::derive::{Display, Error};
 use serde::{Deserialize, Serialize};
-use utoipa::ToSchema;
 
-#[derive(Serialize, Deserialize, ToSchema)]
+#[derive(Serialize, Deserialize)]
 pub struct ResponseBody<T> {
     pub code: i16,
     pub msg: String,
@@ -24,6 +23,7 @@ impl<T> ResponseBody<T> {
         }
     }
 }
+
 impl ResponseBody<String> {
     pub fn error(msg: &str) -> ResponseBody<Option<String>> {
         ResponseBody {
@@ -50,7 +50,7 @@ impl<T: Serialize> Responder for ResponseBody<T> {
 }
 
 #[derive(Debug, Display, Error)]
-pub enum MyError {
+pub enum BizError {
     // #[display("internal error")]
     // InternalError = 0,
     #[display("用户不存在")]
@@ -105,10 +105,10 @@ pub enum MyError {
     UpdateUserError,
 }
 
-impl error::ResponseError for MyError {
+impl error::ResponseError for BizError {
     fn error_response(&self) -> HttpResponse {
         let rsp_data = match self {
-            MyError::AuthError => {
+            BizError::AuthError => {
                 let res: ResponseBody<Option<String>> = ResponseBody {
                     code: StatusCode::UNAUTHORIZED.as_u16() as i16,
                     msg: self.to_string(),
@@ -126,7 +126,7 @@ impl error::ResponseError for MyError {
     }
     fn status_code(&self) -> StatusCode {
         match self {
-            MyError::AuthError => StatusCode::UNAUTHORIZED,
+            BizError::AuthError => StatusCode::UNAUTHORIZED,
             _ => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
