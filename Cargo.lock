@@ -3,5 +3,5 @@
 version = 3
 
 [[package]]
-name = "rs_service_utill"
+name = "rs_service_util"
 version = "0.1.0"
