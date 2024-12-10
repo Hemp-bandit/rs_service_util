@@ -1,4 +1,4 @@
-use actix::prelude::*;
+use std::sync::Arc;
 use derive_more::derive::Display;
 use redis::{aio::MultiplexedConnection, Client};
 
@@ -41,8 +41,9 @@ pub enum RedisCmd {
     SETEX,
 }
 
+#[derive(Debug, Clone)]
 pub struct RedisActor {
-    pub conn: MultiplexedConnection,
+    pub conn: Arc<MultiplexedConnection>,
 }
 
 impl RedisActor {
@@ -55,11 +56,9 @@ impl RedisActor {
                 let detail = err.detail().unwrap();
                 panic!("redis connection err {detail}");
             }
-            Ok(conn) => RedisActor { conn },
+            Ok(conn) => RedisActor {
+                conn: Arc::new(conn),
+            },
         }
     }
-}
-
-impl Actor for RedisActor {
-    type Context = Context<Self>;
 }
