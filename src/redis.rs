@@ -1,4 +1,3 @@
-use std::sync::Arc;
 use derive_more::derive::Display;
 use redis::{aio::MultiplexedConnection, Client};
 
@@ -41,7 +40,7 @@ pub enum RedisCmd {
     SETEX,
 }
 
-#[derive(Debug, Copy)]
+#[derive(Debug,Clone)]
 pub struct RedisTool {
     pub conn: MultiplexedConnection,
 }
