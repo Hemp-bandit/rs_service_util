@@ -44,7 +44,7 @@ macro_rules! transaction {
 #[macro_export]
 macro_rules! rds_con {
     () => {
-        let rds = REDIS.get().expect("get redis err");
+        let rds = crate:: REDIS.get().expect("get redis err");
         let conn = rds.conn.clone();
         conn
     };
