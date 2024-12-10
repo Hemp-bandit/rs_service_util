@@ -41,9 +41,9 @@ pub enum RedisCmd {
     SETEX,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Copy)]
 pub struct RedisTool {
-    pub conn: Arc<MultiplexedConnection>,
+    pub conn: MultiplexedConnection,
 }
 
 impl RedisTool {
@@ -56,9 +56,7 @@ impl RedisTool {
                 let detail = err.detail().unwrap();
                 panic!("redis connection err {detail}");
             }
-            Ok(conn) => RedisTool {
-                conn: Arc::new(conn),
-            },
+            Ok(conn) => RedisTool { conn },
         }
     }
 }
