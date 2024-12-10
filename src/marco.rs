@@ -33,21 +33,3 @@ macro_rules! transaction {
         }
     };
 }
-
-/// 获取redis 连接
-///
-/// ```
-/// let mut con = rds_con!();
-/// let res:Option<String> = con.get("info").await.expect("msg");
-/// ```
-///
-#[macro_export]
-macro_rules! rds_con {
-    () => {
-       {
-        let rds = crate:: REDIS.get().expect("get redis err");
-        let con: redis::aio::MultiplexedConnection = rds.conn.clone();
-        conn
-       }
-    };
-}
