@@ -42,11 +42,11 @@ pub enum RedisCmd {
 }
 
 #[derive(Debug, Clone)]
-pub struct RedisActor {
+pub struct RedisTool {
     pub conn: Arc<MultiplexedConnection>,
 }
 
-impl RedisActor {
+impl RedisTool {
     pub async fn new(redis_url: String) -> Self {
         log::info!("redis_url {redis_url}");
         let client = Client::open(redis_url).unwrap(); // not recommended
@@ -56,7 +56,7 @@ impl RedisActor {
                 let detail = err.detail().unwrap();
                 panic!("redis connection err {detail}");
             }
-            Ok(conn) => RedisActor {
+            Ok(conn) => RedisTool {
                 conn: Arc::new(conn),
             },
         }
