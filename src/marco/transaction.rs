@@ -34,14 +34,3 @@ macro_rules! transaction {
     };
 }
 
-
-
-#[macro_export]
-macro_rules! redis_conn {
-    () => {
-        async {
-            let rds = REDIS.get().expect("msg");
-            rds.conn.clone()
-        }
-    };
-}
