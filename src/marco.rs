@@ -12,7 +12,7 @@
 macro_rules! redis_conn {
     () => {
         async {
-            let rds = REDIS.get().expect("msg");
+            let rds = crate::REDIS.get().expect("msg");
             rds.conn.clone()
         }
     };
