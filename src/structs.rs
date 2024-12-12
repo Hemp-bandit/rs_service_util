@@ -8,9 +8,7 @@ pub struct RedisLoginData {
     pub id: i32,
 }
 
-
 #[derive(Serialize, Deserialize, Clone, Debug)]
-#[serde(rename = "Enum")]
 pub enum Status {
     ACTIVE = 1,
     DEACTIVE = 0,
