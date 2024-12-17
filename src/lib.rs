@@ -4,7 +4,7 @@ pub mod response;
 pub mod sql_tool;
 pub mod time;
 pub mod auth;
-
+pub mod middleware;
 
 
 ///
