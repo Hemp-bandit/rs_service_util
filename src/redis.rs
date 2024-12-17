@@ -1,5 +1,5 @@
 use derive_more::derive::Display;
-use redis::{aio::MultiplexedConnection, Client};
+use redis::{Connection, Client};
 
 #[derive(Debug, Display, Clone)]
 pub enum RedisCmd {
@@ -40,16 +40,15 @@ pub enum RedisCmd {
     SETEX,
 }
 
-#[derive(Debug,Clone)]
 pub struct RedisTool {
-    pub conn: MultiplexedConnection,
+    pub conn: Connection,
 }
 
 impl RedisTool {
     pub async fn new(redis_url: String) -> Self {
         log::info!("redis_url {redis_url}");
         let client = Client::open(redis_url).unwrap(); // not recommended
-        let conn = client.get_multiplexed_async_connection().await;
+        let conn: Result<Connection, redis::RedisError> = client.get_connection();
         match conn {
             Err(err) => {
                 let detail = err.detail().unwrap();
