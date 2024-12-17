@@ -1,47 +1,8 @@
-use derive_more::derive::Display;
-use redis::{Connection, Client};
-
-#[derive(Debug, Display, Clone)]
-pub enum RedisCmd {
-    #[display("sismember")]
-    Sismember,
-
-    #[display("hexists")]
-    Hexists,
-
-    #[display("exists")]
-    Exists,
-
-    #[display("smembers")]
-    Smembers,
-
-    #[display("HGET")]
-    Hget,
-
-    #[display("HSET")]
-    Hset,
-
-    #[display("HDEL")]
-    Hdel,
-
-    #[display("SADD")]
-    Sadd,
-
-    #[display("srem")]
-    Srem,
-
-    #[display("get")]
-    Get,
-
-    #[display("del")]
-    Del,
-
-    #[display("setex")]
-    SETEX,
-}
+use redis::{Client, Connection};
+use std::sync::Arc;
 
 pub struct RedisTool {
-    pub conn: Connection,
+    pub conn: Arc<Connection>,
 }
 
 impl RedisTool {
@@ -54,7 +15,9 @@ impl RedisTool {
                 let detail = err.detail().unwrap();
                 panic!("redis connection err {detail}");
             }
-            Ok(conn) => RedisTool { conn },
+            Ok(conn) => RedisTool {
+                conn: Arc::new(conn),
+            },
         }
     }
 }
