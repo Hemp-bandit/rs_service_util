@@ -56,7 +56,7 @@ pub fn jwt_token_to_data<T: for<'a> Deserialize<'a>>(jwt_token: String) -> Resul
 mod test {
     use crate::{
         jwt::{gen_jwt_token, jwt_token_to_data},
-        structs::RedisLoginData,
+        RedisLoginData,
     };
 
     #[test]

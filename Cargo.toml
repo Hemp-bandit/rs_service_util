@@ -1,10 +1,9 @@
 [package]
 edition = "2021"
 name = "rs_service_util"
-version = "0.1.0"
+version = "0.1.1"
 
 [dependencies]
-actix = "0.13.5"
 actix-web = "4"
 chrono = "0.4.31"
 derive_more = {version = "1.0.0", features = ['full']}
