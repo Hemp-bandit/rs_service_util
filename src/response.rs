@@ -7,7 +7,7 @@ use actix_web::{
 use derive_more::derive::{Display, Error};
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct ResponseBody<T> {
     pub code: i16,
     pub msg: String,
