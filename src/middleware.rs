@@ -5,19 +5,20 @@ use actix_web::{
     middleware::Next,
     Error,
 };
-use redis::AsyncCommands;
+use redis::{aio::ConnectionManager, AsyncCommands};
 
 use crate::{jwt::jwt_token_to_data, response::BizError, RedisLoginData};
 
 pub async fn jwt_mw(
     req: ServiceRequest,
     next: Next<impl MessageBody>,
+    conn: ConnectionManager,
 ) -> Result<ServiceResponse<impl MessageBody>, Error> {
     // 不是服务调用，也不在白名单中
     let condition = !check_service_call(&req) && !check_is_in_whitelist(&req);
 
     if condition {
-        let check_res = has_permission(&req).await;
+        let check_res = has_permission(&req, conn).await;
         if let Err(e) = check_res {
             return Err(Error::from(e));
         }
@@ -43,7 +44,7 @@ fn check_service_call(req: &ServiceRequest) -> bool {
     header.is_some()
 }
 
-async fn has_permission(req: &ServiceRequest) -> Result<bool, BizError> {
+async fn has_permission(req: &ServiceRequest, conn: ConnectionManager) -> Result<bool, BizError> {
     let value: HeaderValue = HeaderValue::from_str("").unwrap();
 
     let binding = req.method().to_owned();
@@ -65,14 +66,14 @@ async fn has_permission(req: &ServiceRequest) -> Result<bool, BizError> {
         .expect(&BizError::AuthError.to_string());
     log::info!("jwt_user {jwt_user:?}");
     // jwt_user.name
-    check_is_login_redis(jwt_user.name).await
+    check_is_login_redis(jwt_user.name, conn).await
 }
 
-pub async fn check_is_login_redis(user_name: String) -> Result<bool, BizError> {
-    let key = format!("{}_{}", crate::REDIS_KEY.to_string(), user_name);
-
-    let rds = crate::REDIS.get().expect("msg");
-    let mut conn = rds.conn.clone();
+pub async fn check_is_login_redis(
+    user_name: String,
+    mut conn: ConnectionManager,
+) -> Result<bool, BizError> {
+    let key = format!("user_service_{}", user_name);
     let redis_login: Result<bool, redis::RedisError> = conn.exists(key).await;
     let is_login = match redis_login {
         Err(err) => {
