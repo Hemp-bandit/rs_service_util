@@ -21,7 +21,7 @@ pub async fn jwt_mw(
     }
 
     // 不是服务调用，也不在白名单中
-    let condition = !check_service_call(&req) || !check_is_in_whitelist(&req);
+    let condition = !check_is_in_whitelist(&req) && !check_service_call(&req);
 
     if condition {
         let check_res = has_permission(&req, conn).await;
