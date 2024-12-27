@@ -13,7 +13,13 @@ pub async fn jwt_mw(
     req: ServiceRequest,
     next: Next<impl MessageBody>,
     conn: ConnectionManager,
+    is_dev: bool,
 ) -> Result<ServiceResponse<impl MessageBody>, Error> {
+    if is_dev {
+        let res = next.call(req).await?;
+        return Ok(res);
+    }
+
     // 不是服务调用，也不在白名单中
     let condition = !check_service_call(&req) || !check_is_in_whitelist(&req);
 

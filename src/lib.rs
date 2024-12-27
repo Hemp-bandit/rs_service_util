@@ -5,6 +5,7 @@ pub mod sql_tool;
 pub mod time;
 pub mod auth;
 pub mod middleware;
+pub mod marcos;
 
 use serde::{Deserialize, Serialize};
 
