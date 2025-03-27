@@ -10,7 +10,7 @@ impl RedisTool {
         log::info!("redis_url {redis_url}");
         let client = Client::open(redis_url).unwrap(); // not recommended
         let mut config = ConnectionManagerConfig::new();
-        config =config.set_connection_timeout(Duration::new(30, 0));
+        config =config.set_connection_timeout(Duration::from_secs(30));
         let manage = client.get_connection_manager_with_config(config).await.expect("msg");
         RedisTool { conn: manage }
     }
